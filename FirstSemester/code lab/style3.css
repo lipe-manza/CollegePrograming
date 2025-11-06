@@ -1,0 +1,23 @@
+.top {
+  background-color: rgb(250, 208, 178);
+  text-align: center;
+}
+#div {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  width: 80%
+  ;
+}
+
+H3{
+border: dashed rgb(250, 208, 178);
+text-align: center;
+
+}
+img {
+  border:4px outset black;
+  border-radius: 500pc;
+  object-fit: cover;
+}
+

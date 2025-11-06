@@ -1,0 +1,30 @@
+h1 {
+  color: aquamarine;
+  text-align: center;
+}
+
+.all {
+  display: grid;
+  justify-items: center;
+}
+.divcontainer {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-items: center;
+  column-gap: 30px;
+  justify-content: center;
+}
+p {
+  border: solid aquamarine;
+}
+#carlos {
+  border: solid black;
+  width: fit-content;
+  border-radius: 200px;
+}
+.fora {
+  display: grid;
+  place-items: center;
+  grid-template-rows: 1fr;
+}

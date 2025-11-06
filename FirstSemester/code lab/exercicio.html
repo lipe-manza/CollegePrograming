@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Meus Filmes Favoritos</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 2rem;
+      }
+
+      #lista {
+        list-style: none;
+        padding: 0;
+      }
+
+      .item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .item button {
+        margin-left: auto;
+      }
+    </style>
+    <script src="exercicio.js" defer></script>
+  </head>
+
+  <body>
+    <h1>Meus Filmes Favoritos</h1>
+    <form id="formFavorito">
+      <input id="inputFavorito" placeholder="Digite algo…" required />
+      <button type="submit">Adicionar</button>
+    </form>
+    <p>
+      Você tem
+      <!-- span é elemento de HTML usado para representar pequenos elementos inline-->
+      <span id="contador">0</span> itens na lista.
+    </p>
+    <ul id="lista"></ul>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+h1 {
+  color: white;
+}
+
+body {
+  background-color: #5ec8ae;
+}
+
+ol {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+
+  border: 4px solid rgb(254, 119, 141);
+  width: 70%;
+}
+.rosinha {
+  color: rgb(254, 119, 141);
+  font-size: 18px;
+}
+
+#divs1 {
+  display: flex;
+  align-content: row;
+  justify-content: space-between;
+  width: 90%;
+
+}
+#divs2 {
+  display: flex;
+  flex-direction: column;
+}
