@@ -1,8 +1,9 @@
 #ifndef BINARY_BALANCED_SEARCH_TREE_H
 #define BINARY_BALANCED_SEARCH_TREE_H
 
-#include "item.h"
 #include <stdbool.h>
+#include <stdbool.h>
+#include "item.h"
 
 typedef struct node ND;
 // Estrutura principal da árvore binária de busca

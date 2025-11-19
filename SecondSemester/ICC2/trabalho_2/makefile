@@ -1,3 +1,7 @@
+# =========================================================
+# CONFIGURAÇÃO
+# =========================================================
+
 # Compilador e flags
 CC = gcc
 CFLAGS = -Wall -Wextra -O2 -std=c99
@@ -7,13 +11,17 @@ TARGET = trabalho_2
 OUTPUT_DIR = output
 RESULTS_DIR = resultados
 
-SOURCES = trabalho_2.c util.c
+# Lista de fontes atuais (sem util.h)
+SOURCES = trabalho_2.c
 OBJECTS = $(SOURCES:.c=.o)
 
-# Alvo padrão
+# =========================================================
+# ALVO PADRÃO
+# =========================================================
+
 all: $(OUTPUT_DIR) $(RESULTS_DIR) $(OUTPUT_DIR)/$(TARGET)
 
-# Cria diretórios necessários
+# Cria diretórios se não existirem
 $(OUTPUT_DIR):
 	@mkdir -p $(OUTPUT_DIR)
 	@echo "Pasta $(OUTPUT_DIR)/ criada."

@@ -1,6 +1,8 @@
 #include "avl.h"
 #include <stdbool.h> // needed for bool type
 #include <stdlib.h>
+#define max(a,b) ((a>b)? a: b)
+
 
 // Node structure
 struct node {
@@ -39,6 +41,15 @@ ND* avl_create_node(ITEM* item) {
     return new_node;
 }
 
+int avl_altura_no(ND* root) {
+    if (root == NULL) {
+        return -1;
+    }
+    else {
+        return root->height;
+    }
+}
+
 void avl_delete_aux(ND* root) {
     if (root != NULL) {
         avl_delete_aux(root->left);
@@ -69,13 +80,14 @@ ND* right_rotation(ND* A) {
     A->left = B->right;
     B->right = A;
 
-    A->height = (A->left->height > A->left->height) ? A->left->height + 1 : A->right->height + 1;
+    A->height = max(avl_nd_height(A->left), avl_nd_height(A->right)) + 1;
+    B->height = max(avl_nd_height(B->left), A->height) + 1;
     return B;
 
 }
 
 ND* left_rotation(ND* A) {
-    ND* B = ;
+    ND* B = A->right;
     A->left = B->right;
     B->right = A;
 
@@ -137,7 +149,7 @@ ND* avl_insert_node(ND* root, ND* new_node) { // It is linking the arrows backwa
 
     if (BF == -2) {
         if (avl_nd_height(root->right->left) - avl_nd_height(root->right->right) > 0) {
-            root = left_right_rotation(root);
+            root = right_left_rotation(root);
         }
         else {
             root = left_rotation(root);
@@ -145,7 +157,7 @@ ND* avl_insert_node(ND* root, ND* new_node) { // It is linking the arrows backwa
     }
     if (BF == 2) {
         if (avl_nd_height(root->left->right) - avl_nd_height(root->left->right) < 0) {
-            root = right_left_rotation(root);
+            root = left_right_rotation(root);
         }
         else {
             root = right_rotation(root);
@@ -180,11 +192,11 @@ bool avl_insert(AVL* T, ITEM* item) {
 
 
 // Calculates the depth of the root of the Binary Tree
-int AVL_calc_depth(ND* r) {
+int avl_calc_depth(ND* r) {
     if (r == NULL)
         return -1; // If node is NULL return -1 to compensate the + 1
-    int le = AVL_calc_depth(r->left);
-    int ri = AVL_calc_depth(r->right);
+    int le = avl_calc_depth(r->left);
+    int ri = avl_calc_depth(r->right);
 
     return le - ri;
 }
@@ -210,57 +222,69 @@ ITEM* avl_search(ND* root, int key) {
     return avl_search2(root, key);
 }
 
-void swap_left_max(ND* t, ND* r, ND* a) {
-    if (t->right != NULL) {
+void swap_left_max(ND* t, ND* r, ND* a) { // t= root->left , r = root , a = root when called in remove
+    if (t->right != NULL) { // verifica se o da direita é != NULL para achar o maior da esquerda
         swap_left_max(t->right, r, t);
     }
-    if (a == r)
+    if (a == r) // Caso em que o anterior é igual a raiz, ou seja se o primeiro da esquerda já é o maior
         a->left = t->left;
     else
         a->right = t->left;
 
+    ITEM* it = r->item;
     r->left = t->item;
     free(t);
     t = NULL;
 }
 
-ITEM* bst_remove2(ND** root, int key) {
+ND* avl_remove_aux(ND* root, int key) {
     ND* p;
-    ITEM* item;
-    if (*root == NULL) return NULL;
-    if (key == item_get_chave((*root)->item))
+
+    if (root == NULL) return NULL;
+    if (key == item_get_chave(root->item))
     {
-        item = (*root)->item;
-        if ((*root)->left == NULL || (*root)->right == NULL)// se tem um ou 0 filhos
+        if (root->left == NULL || root->right == NULL)// se tem um ou 0 filhos
         {
-            p = *root;
-            if ((*root)->left == NULL)
-            {
-                (*root) = (*root)->right;
-            }
-            else {
-                (*root) = (*root)->left;
-            }
+            p = root;
+            if (root->left == NULL)
+                root = root->right;
+            else
+                root = root->left;
+            item_apagar(&p->item);
             free(p);
             p = NULL;
         }
-        else {// Ambos os filhos
-            swap_left_max((*root)->left, (*root), (*root));
-            return item;
+        else // Ambos os filhos
+            swap_left_max(root->left, root, root);
+    }
+    else if (key < item_get_chave(root->item))
+        return bst_remove2(root->left, key);
+    else
+        return bst_remove2(root->right, key);
+
+    if (root != NULL) {
+        // updating the height of each node recursively
+        int lh = avl_nd_height(root->left) + 1;
+        int rh = avl_nd_height(root->right) + 1;
+        root->height = (lh > rh) ? lh : rh;
+
+        int BF = lh - rh;// Balance Factor
+        if (BF == -2) {
+            if (avl_nd_height(root->right->left) - avl_nd_height(root->right->right) > 0)
+                root = right_left_rotation(root);
+            else
+                root = left_rotation(root);
+        }
+        if (BF == 2) {
+            if (avl_nd_height(root->left->right) - avl_nd_height(root->left->right) < 0)
+                root = left_right_rotation(root);
+            else
+                root = right_rotation(root);
         }
     }
-    else {
-        if (key < item_get_chave((*root)->item))
-            return bst_remove2(&(*root)->left, key);
-        else
-            return bst_remove2(&(*root)->right, key);
-    }
+    return root;
 }
 
-ITEM* bst_remove(AVL* T, int key) {
-    if (T != NULL) {
-        return bst_remove2(&(T->root), key);
-    }
-    else
-        return NULL;
+bool* avl_remove(AVL* T, int key) {
+    return ((T->root = avl_remove_aux(T->root, key)) != NULL) ? true : false;
 }
