@@ -3,8 +3,8 @@
 struct node {
     ITEM* item;
     int color;
-    ND* left_child;
-    ND* right_child;
+    ND* leftC;
+    ND* rightC;
 };
 
 struct redBlackTree {
@@ -12,12 +12,9 @@ struct redBlackTree {
     int depth;
 };
 
-RBT* rbt_create() {
+RBT* rbtCreate() {
     RBT* T = (RBT*)malloc(sizeof(RBT));
     if (T == NULL) return NULL;
-
-    T->root = (ND*)malloc(sizeof(ND));
-    if (T->root == NULL) printf("fail to alocate memory for root");
 
     T->root = NULL;
     T->depth = -1;
@@ -25,18 +22,26 @@ RBT* rbt_create() {
     return T;
 }
 
-void invert_color(ND* r) {
-    r->color = !r->color;
-    if (r->left_child)
-        r->left_child = !r->left_child->color;
-    if (r->right_child)
-        r->right_child = !r->right_child->color;
+ND* create_node(ITEM* x) {
+    ND* h = malloc(sizeof(ND));
+    h->item = x;
+    h->color = 1; // vermelho
+    h->leftC = h->rightC = NULL;
+    return h;
 }
 
-ND* right_rotation(ND* C) {
-    ND* B = C->left_child;
-    C->left_child = B->right_child;
-    B->right_child = C;
+void invertColor(ND* r) {
+    r->color = !r->color;
+    if (r->leftC)
+        r->leftC->color = !r->leftC->color;
+    if (r->rightC)
+        r->rightC->color = !r->rightC->color;
+}
+
+ND* rightRotation(ND* C) {
+    ND* B = C->leftC;
+    C->leftC = B->rightC;
+    B->rightC = C;
 
     B->color = C->color;
     C->color = 1;
@@ -44,10 +49,10 @@ ND* right_rotation(ND* C) {
     return B;
 }
 
-ND* left_rotation(ND* A) {
-    ND* B = A->right_child;
-    A->left_child = B->left_child;
-    B->left_child = A;
+ND* leftRotation(ND* A) {
+    ND* B = A->rightC;
+    A->rightC = B->leftC;
+    B->leftC = A;
 
     B->color = A->color;
     A->color = 1;
@@ -55,7 +60,7 @@ ND* left_rotation(ND* A) {
     return B;
 }
 
-int is_red(ND* h) {
+int isRed(ND* h) {
     if (h == NULL) return 0;
     return (h->color == 1);
 }
@@ -63,27 +68,145 @@ int is_red(ND* h) {
 ND* insert_node(ND* h, ITEM* data) {
     if (h == NULL) return create_node(data);
     if (item_get_chave(data) < item_get_chave(h->item))
-        h->left_child = insert_node(h->left_child, data);
+        h->leftC = insert_node(h->leftC, data);
     else if (item_get_chave(data) > item_get_chave(h->item))
-        h->right_child = insert_node(h->right_child, data);
+        h->rightC = insert_node(h->rightC, data);
+    else {
+        // NOVO: Rejeitar duplicata
+        item_apagar(&data);
+        return NULL;
+    }
 
-    if (is_red(h->right_child) && !is_red(h->left_child))
-        h = left_rotation(h);
-    if (is_red(h->left_child) && is_red(h->left_child->left_child))
-        h = right_rotation(h);
-    if (is_red(h->right_child) && is_red(h->left_child))
-        invert_color(h);
+    if (isRed(h->rightC) && !isRed(h->leftC))
+        h = leftRotation(h);
+    if (isRed(h->leftC) && isRed(h->leftC->leftC))
+        h = rightRotation(h);
+    if (isRed(h->rightC) && isRed(h->leftC))
+        invertColor(h);
 
     return h;
 }
 
-bool rbt_insert(RBT* T, ITEM* data) {
+bool rbtInsert(RBT* T, ITEM* data) {
     if (T == NULL) return false;
 
-    T->root = insert_node(T->root, data);  
+    T->root = insert_node(T->root, data);
     if (T->root == NULL) return false;
 
-    T->root->color = 1;  // raiz sempre preta
+    T->root->color = 0;  // raiz sempre preta
 
     return true;
 }
+
+// Funcoes auxiliares para a remocao 
+ND* propagateRight(ND* h) {
+    if (isRed(h->leftC))
+        h = rightRotation(h);
+    if (!isRed(h->rightC) && !isRed(h->rightC->leftC)) {
+        invertColor(h);
+        if (isRed(h->leftC->leftC)) {
+            h = rightRotation(h);
+            invertColor(h);
+        }
+    }
+    return h;
+}
+
+
+ND* propagateLeft(ND* h) {
+    if (!isRed(h->leftC) && !isRed(h->leftC->leftC)) {
+        invertColor(h);
+        if (isRed(h->rightC->leftC)) {
+            h->rightC = rightRotation(h->rightC);
+            h = leftRotation(h);
+            invertColor(h);
+        }
+    }
+    return h;
+}
+
+ND* restore(ND* h) {
+    if (isRed(h->rightC) && !isRed(h->leftC))
+        h = leftRotation(h);
+    if (isRed(h->leftC) && isRed(h->leftC->leftC))
+        h = rightRotation(h);
+    if (isRed(h->rightC) && isRed(h->leftC))
+        invertColor(h);
+
+    return h;
+}
+
+ND* min(ND* h) {
+    while (h->leftC) {
+        h = h->leftC;
+    }
+    return h;
+}
+
+ND* removeMin(ND* h) {
+    if (h->leftC == NULL) {
+        item_apagar(&h->item);
+        free(h);
+        h = NULL;
+        return h;
+    }
+    if (!isRed(h->leftC) && !isRed(h->leftC->leftC))
+        h = propagateLeft(h);
+
+    h->leftC = removeMin(h->leftC);
+
+    return restore(h);
+}
+
+ND* deletNode(ND* r, int key) {
+    if (r == NULL) return (NULL);
+
+    if (item_get_chave(r->item) == key) {
+        // Caso folha e 1 só filho
+        if (r->leftC == NULL || r->rightC == NULL) {
+            ND* p = r;
+            if (r->leftC == NULL)
+                r = r->rightC;
+            else
+                r = r->leftC;
+            item_apagar(&p->item);  // NOVO: Liberar o item
+            free(p);
+            p = NULL;
+        }// Caso 2 filhos
+        else {
+            r = propagateRight(r);
+            ND* x = min(r->rightC);
+            item_apagar(&r->item);  // NOVO: Liberar item antigo antes de trocar
+            r->item = x->item; // Troca as chaves
+            r->rightC = removeMin(r->rightC);
+        }
+    }
+    else {
+        if (key < item_get_chave(r->item)) {
+            r = propagateLeft(r);
+            r->leftC = deletNode(r->leftC, key);
+        }
+        else {
+            r = propagateRight(r);
+            r->rightC = deletNode(r->rightC, key);
+        }
+    }
+    if (r != NULL)
+        r = restore(r);
+
+    return r;
+}
+
+/* Função pública de remoção para a árvore inteira  */
+bool rbtRemove(RBT* T, int key) {
+    if (T == NULL || T->root == NULL) return false;
+
+    ND* oldRoot = T->root;
+    T->root = deletNode(T->root, key);
+
+    if (T->root)
+        T->root->color = 0; // raiz preta
+
+    return oldRoot != T->root;  // NOVO: Retorna true apenas se mudou
+}
+

@@ -96,3 +96,21 @@ int BT_depth(ND* r) {
     int ri = BT_depth(r->right);
     return ((le > ri) ? le : ri) + 1; // Return the greater depth + 1 to do the recursive call
 }
+
+bt_delete(ND** r) {
+    if (r == NULL) return;
+    else {
+        bt_delete(&(*r)->left);
+        bt_delete(&(*r)->right);
+        item_apagar(&(*r)->item);
+        free(*r);
+        *r = NULL;
+    }
+}
+void BT_delete(BT** T) {
+    if (T == NULL) return;
+    btDelet(&(*T)->root);
+    free(*T);
+    *T = NULL;
+}
+

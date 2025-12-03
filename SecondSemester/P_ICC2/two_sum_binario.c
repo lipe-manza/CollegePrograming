@@ -71,7 +71,7 @@ int main() {
 
     for (int i = 0; i < Q; i++) {
         scanf(" %d", &key);
-        printf(" %s\n", ((logTwoSum(vector, key, N) ? "S" : "N")));
+        printf("%s\n", ((logTwoSum(vector, key, N) ? "S" : "N")));
     }
 
     return 0;

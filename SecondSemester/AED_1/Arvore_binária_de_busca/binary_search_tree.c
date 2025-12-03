@@ -81,6 +81,18 @@ ND* bst_insert_node(ND* root, ND* new_node) { // It is linking the arrows backwa
 //     bst_insert_node(&(*root)->right, new_node);
 // }
 
+ND* abb_insert_node(ND* r, ND* new_node) {
+  if (r == NULL)
+    r = new_node;
+
+  if (item_get_chave(new_node->item) > item_get_chave(r->item))
+    r->right = abb_insert_node(r->right, new_node);
+  if (item_get_chave(new_node->item) < item_get_chave(r->item))
+    r->left = abb_insert_node(r->left, new_node);
+
+  return r;
+}
+
 // Public insert function
 bool bst_insert(BST* T, ITEM* item) {
   ND* new_node;
@@ -178,3 +190,5 @@ ITEM* bst_remove(BST* T, int key) {
   else
     return NULL;
 }
+
+
