@@ -191,4 +191,44 @@ ITEM* bst_remove(BST* T, int key) {
     return NULL;
 }
 
+int maior_elemento(ND* r) {
+  if (r->right == NULL)
+    return itemget_chave(r->item);
 
+  return maior_elemento(r->right);
+}
+int menor_elemento(ND* r) {
+  if (r->left == NULL)
+    return itemget_chave(r->item);
+
+  return menor_elemento(r->left);
+}
+
+int altura(ND* r) {
+  if (r == NULL) return -1;
+
+  int e = altura(r->left);
+  int d = altura(r->right);
+
+  return (e > d) ? e + 1 : d + 1;
+}
+
+int quantidade_elementos(ND* r) {
+  if (r == NULL) return 0;
+
+  return 1 + quantidade_elementos(r->left) + quantidade_elementos(r->right);
+}
+bool perfeitamente_balanceada(BST* T) {
+  if (T == NULL) return false;
+
+  int h = altura(T->root);
+
+  int n = quantidade_elementos(T->root);
+
+  return (n == (pow(2, h + 1) - 1));
+
+  //int perfeito = (1 << (h + 1)) - 1;   // 2^(h+1) - 1 usando bitshift
+  //return n == perfeito;
+
+
+}

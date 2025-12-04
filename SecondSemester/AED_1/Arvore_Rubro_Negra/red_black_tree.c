@@ -210,3 +210,44 @@ bool rbtRemove(RBT* T, int key) {
     return oldRoot != T->root;  // NOVO: Retorna true apenas se mudou
 }
 
+int quant_elementos(ND* r) {
+    if (r == NULL)
+        return 0;
+
+    return 1 + quant_elementos(r->leftC) + quant_elementos(r->rightC);
+
+}
+
+int maior_elemento(ND* r) {
+    if (r == NULL) return -10000000;
+
+    int maiorL = maior_elemento(r->leftC);
+    int maiorR = maior_elemento(r->rightC);
+
+    int Omaior = (maiorL < maiorR) ? maiorR : maiorL;
+    if (item_get_chave(r->item) < Omaior) {
+        return Omaior;
+    }
+    else
+        return item_get_chave(r->item);
+}
+
+int menor_elemento(ND* r) {
+    if (r == NULL) return 100000000;
+
+    int menorL = menor_elemento(r->leftC);
+    int menorR = menor_elemento(r->rightC);
+
+    int Omenor = (menorL > menorR) ? menorR : menorL;
+    if (item_get_chave(r->item) > Omenor) {
+        return Omenor;
+    }
+    else
+        return item_get_chave(r->item);
+}
+
+int soma_todos(ND* r) {
+    if (r == NULL) return 0;
+
+    return item_get_chave(r->item) + soma_todos(r->leftC) + soma_todos(r->rightC);
+}
