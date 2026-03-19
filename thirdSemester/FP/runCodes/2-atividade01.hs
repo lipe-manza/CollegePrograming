@@ -6,14 +6,10 @@ main = do
 
   printCases a b c 
 
-isValid a b c
-    | a < b + c && b < a + c && c < a + b = True
-    | a ==b && a==c && a== 0 = True
-    | otherwise = False
+isValid a b c = a <= b + c && b <= a + c && c <= a + b 
 
 
-calcArea  a b c =  
-    area
+calcArea  a b c =  area
     where   
         area = sqrt $ p* (p-a)*(p-b)*(p-c)
         p = (/2) $ a + b +  c
