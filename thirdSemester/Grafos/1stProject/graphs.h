@@ -1,9 +1,6 @@
 #ifndef GRAPH_H
-    #define GRAPH_H
-    
+#define GRAPH_H
 
-    typedef struct Graph Graph;
-
-    
+typedef struct Graph Graph;
 
 #endif
