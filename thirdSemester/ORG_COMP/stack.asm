@@ -1,0 +1,2 @@
+    .data
+    .align 2

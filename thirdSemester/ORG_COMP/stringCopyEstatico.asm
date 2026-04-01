@@ -1,9 +1,9 @@
     .data
     .align 0
 
-strSrc: .asciz "teste" 
+strSrc: .asciz "teste"
 strDst: .space 6  # reserve 6 bytes in the static memory
-    
+
     .text
     .align 2
     .globl
@@ -16,13 +16,13 @@ loopCopy:
     sb s0, 0(t1) # put the content of s0 into t1
 
     addi t0,t0,1
-    addi t1,t1,1 
+    addi t1,t1,1
 
     bne s0,zero,loopCopy # branch not equal zero=(\0)
 
-    addi a7,zero , 4
+    addi a7,zero , 4    # Print String
     la a0, strDst
     ecall
 
-    addi a7,zero,10
+    addi a7,zero,10     # Finish the program
     ecall
