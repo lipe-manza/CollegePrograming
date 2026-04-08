@@ -1,8 +1,8 @@
     .data
-    .align
+    .align 2
 
 strInput: .asciz "Digite um numero >=0: "
-strResp1: .asciz "O fatorial de  "
+strResp1: .asciz "O fatorial de "
 strResp2: .asciz " eh "
 strErro:  .asciz "Entrada invalida\n"
 
@@ -10,61 +10,70 @@ strErro:  .asciz "Entrada invalida\n"
     .align 2
     .globl main
 main:
-loopReadInput: # Print strInput and read the IO
-    # Print strInput
+    addi sp,sp,-4
+    sw s0,0(sp)
+
+loopReadInput:
     addi a7,zero,4
     la a0,strInput
     ecall
-    # Read the input
     addi a7,zero,5
     ecall
-    bge,zero,continue # Branch greater or equal then zero
+    bge a0,zero,continue
 
-    # else print ERRO
-    addi a7 ,zero , 4
-    la a0 , strErro
+    addi a7,zero,4
+    la a0,strErro
     ecall
-    j loopReadInput  # jump to loop
+    j loopReadInput
 
 continue:
-    # call fatorial function
-    # Parameter a0 = n
-    # return a1 = fatorial
-    add S0 , zero , a0 # Save the read value into s0
+    add s0,zero,a0
     jal fatorial
-    # Print strResp1
-    addi a7 ,zero , 4
-    la a0 , strResp1
-    ecall
-    # Print n
-    addi a7 ,zero , 4
-    add a0 ,zero, S0
+
+    addi a7,zero,4
+    la a0,strResp1
     ecall
 
-    # Print strResp2
-    addi a7 ,zero , 4
-    la a0 , strResp2
+    addi a7,zero,1
+    add a0,zero,s0
     ecall
 
-    # Print fatorial
-    addi a7 ,zero , 4
-    add a0 ,zero , a1
+    addi a7,zero,4
+    la a0,strResp2
     ecall
 
-    addi a7 , zero , 10
+    addi a7,zero,1
+    add a0,zero,a1
+    ecall
+
+    lw s0,0(sp)
+    addi sp,sp,4
+    addi a7,zero,10
     ecall
 
 fatorial:
-    add t0 ,zero ,a0
-    addi a1 , zero , 1
+    addi sp,sp,-8
+    sw ra,0(sp)
+    sw a0,4(sp)
 
-loopFat:
-    bne t0 , zero , exit
-    mul a1 ,a1 , t0
-    addi a1 , zero , 1
-    j loopFat
+    beq a0,zero,return1
 
-exit: jr ra
+    addi a0,a0,-1
+    jal fatorial
+
+    lw a0,4(sp)
+    mul a1,a1,a0
+
+    j retornaFat
+
+return1:
+    addi a1,zero,1
+
+retornaFat:
+    lw ra,0(sp)
+    lw a0,4(sp)
+    addi sp,sp,8
+    jr ra
 
 
 
