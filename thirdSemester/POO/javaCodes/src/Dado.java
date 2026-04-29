@@ -1,10 +1,10 @@
 import java.util.Random;
 
 /**
- * Simula um dado de número de lados variados. Ao criar o objeto 
+ * Simula um dado de número de lados variados. Ao criar o objeto
  * é possível estabelecer o número de lados. A rolagem do dado é
  * feita por meio de um gerador de números aleatórios ({@link Random}).
- * 
+ *
  * @author delamaro
  *
  */
@@ -12,7 +12,7 @@ public class Dado {
 	private int lados;
 	private int atual;
 	private Random r;
-	
+
 	/**
 	 * Cria objeto com um número qualquer de lados
 	 * @param n - número de lados do dado
@@ -45,10 +45,10 @@ public class Dado {
 		r = new Random();
 		rolar();
 	}
-	
+
 	/**
 	 * Simula a rolagem do dado por meio de um gerador aleatório.
-	 * O número selecionado pode posteriormente ser recuperado com a chamada a 
+	 * O número selecionado pode posteriormente ser recuperado com a chamada a
 	 * {@link getLado()}
 	 * @return o número que foi sorteado
 	 */
@@ -56,7 +56,7 @@ public class Dado {
 		atual = r.nextInt(lados) + 1;
 		return atual;
 	}
-	
+
 	/**
 	 * Recupera o último número selecionado.
 	 * @return o número do último lado selecionado.
@@ -78,11 +78,11 @@ public class Dado {
 	 * uma representação do dado que está para cima. Note que só
 	 * funciona corretamente para dados de 6 lados. Exemplo:<br>
 	 * <pre>
-+-----+    
-|*   *|    
-|  *  |    
-|*   *|    
-+-----+    
++-----+
+|*   *|
+|  *  |
+|*   *|
++-----+
 	 * </pre><br>
 	 */
 	@Override
@@ -109,14 +109,14 @@ public class Dado {
 		case 6:
 			s += (s111 + s000 + s111);
 			break;
-			
+
 		}
 		s += ("+-----+\n");
 		return s;
 	}
 
 	/**
-	 * Não tem função real dentro da classe. Foi usada apenas para testar os métodos 
+	 * Não tem função real dentro da classe. Foi usada apenas para testar os métodos
 	 * implementados
 	 * @param args -- Sem uso.
 	 */
@@ -131,5 +131,5 @@ public class Dado {
 			System.out.println(d);
 		}
 	}
-	
+
 }
