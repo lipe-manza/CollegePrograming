@@ -12,3 +12,4 @@ primos = p [2..]
         p(x:xs) = x:p [y | y <-xs , mod y x /=0]
 
 fibs = 1:1:zipWith (+) fibs (tail fibs)
+

@@ -1,12 +1,12 @@
 main :: IO ()
 main = do
-  linha1 <- getLine
-  let x = read linha1 :: Int
+    linha1 <- getLine
+    let x = read linha1 :: Int
 
-  linha2 <- getLine
-  let y = read linha2 :: Int
+    linha2 <- getLine
+    let y = read linha2 :: Int
 
-  print $ maxIntervalo $ filter (>= x) $ takeWhile (<= y) primos
+    print $ maxIntervalo $ filter (>= x) $ takeWhile (<= y) primos
 
 primos :: [Int]
 primos = p [2 ..]
@@ -15,6 +15,6 @@ primos = p [2 ..]
 
 maxIntervalo :: [Int] -> Int
 maxIntervalo xs
-    |null xs = 0
-    |length xs == 1 = 0
-    |otherwise  = maximum $ [b - a | (a, b) <- zip xs (drop 1 xs)]
+    | null xs = 0
+    | length xs == 1 = 0
+    | otherwise = maximum $ [b - a | (a, b) <- zip xs (drop 1 xs)]
